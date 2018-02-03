@@ -32,32 +32,41 @@ namespace AuraWallpaperColors
 
         public static (Color outer, List<Color> colors) GetPaletteFromImageFile(string path, int numColors)
         {
-            if (numColors < 2) {
+            if (numColors < 2)
+            {
                 numColors = 2;
             }
 
             // we're trying to get at the file pretty fast after it changes
-            // so sometimes it's still locked by another process
+            // so usually it's still locked by another process
             while (!IsFileReady(path))
             {
-                Thread.Sleep(TimeSpan.Zero);
+                Thread.Sleep(TimeSpan.FromMilliseconds(200));
             }
 
             Pix pix = null;
-
-            // if reading fails, the pix will be null
-            // but this is probably because someone else is touching the file
-            // so just try again after a while
-            while (pix == null) 
+            List<Color> colors = null;
+            try
             {
-                pix = Pix.Read(path);
-                if (pix == null)
+                // if reading fails, the pix will be null
+                // but this is probably because someone else is touching the file
+                // so just try again after a while
+                while (pix == null)
                 {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(500));
+                    pix = Pix.Read(path);
+                    if (pix == null)
+                    {
+                        Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                    }
                 }
+
+                colors = ExtractColors(pix);
+            }
+            finally
+            {
+                pix?.Dispose();
             }
 
-           var colors = ExtractColors(pix);
             // the first one should be the "base" color for the image,
             // so use that as the main color
             return (colors[0], colors.Skip(1).ToList());
