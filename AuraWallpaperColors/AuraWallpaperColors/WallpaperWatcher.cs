@@ -83,8 +83,8 @@ namespace AuraWallpaperColors
                         var t = new Timer((_) => obs.OnNext(Unit.Default), null, 100, Timeout.Infinite);
                     }
                 };
-
                 watcher.EnableRaisingEvents = true;
+                watcher.Changed += handler;
 
                 return Disposable.Create(() =>
                 {
