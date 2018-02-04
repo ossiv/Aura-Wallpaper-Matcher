@@ -57,7 +57,8 @@ namespace AuraWallpaperColors
             SetSettings(SettingsUtils.ReadSettings());
         }
 
-        public void SetSettings(Settings settings) {
+        public void SetSettings(Settings settings)
+        {
             this.Settings = settings;
 
             if (ColorCarousel != null)
@@ -85,6 +86,10 @@ namespace AuraWallpaperColors
 
                 SettingsWindow.Show();
             }
+            else
+            {
+                SettingsWindow.Activate();
+            }
         }
 
         private void SettingsWindow_Closed(object sender, EventArgs e)
@@ -98,16 +103,18 @@ namespace AuraWallpaperColors
             AuraSink = new AuraColorSink();
             WallpaperWatcher = new WallpaperWatcher();
 
-           
+
 
             WallpaperSubscription = WallpaperWatcher.Subscribe(WallpaperPathChanged);
         }
 
         bool SettingColor;
-        private void WallpaperPathChanged(string newPath) {
+        private void WallpaperPathChanged(string newPath)
+        {
             if (SettingColor) return;
             SettingColor = true;
-            Observable.FromAsync(() => SetColorsFromImage(newPath)).Take(1).Subscribe(_ => {
+            Observable.FromAsync(() => SetColorsFromImage(newPath)).Take(1).Subscribe(_ =>
+            {
                 SettingColor = false;
             });
         }
