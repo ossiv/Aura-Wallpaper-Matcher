@@ -115,5 +115,10 @@ namespace AuraWallpaperColors
             }
 
         }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Current.Shutdown();
+        }
     }
 }
