@@ -14,7 +14,7 @@ namespace AuraWallpaperColors
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, ISingleInstanceApp
     {
         int numPaletteColors = 10;
 
@@ -32,20 +32,24 @@ namespace AuraWallpaperColors
 
         public Settings Settings { get; private set; }
 
+
+        [STAThread]
+        public static void Main()
+        {
+            string mutexName = System.Reflection.Assembly.GetExecutingAssembly().GetType().GUID.ToString();
+            if (SingleInstance<App>.InitializeAsFirstInstance(mutexName))
+            {
+                var application = new App();
+                application.InitializeComponent();
+                application.Run();
+                SingleInstance<App>.Cleanup();
+            }
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            bool createdNew = false;
-            string mutexName = System.Reflection.Assembly.GetExecutingAssembly().GetType().GUID.ToString();
-            using (System.Threading.Mutex mutex = new System.Threading.Mutex(false, mutexName, out createdNew))
-            {
-                if (!createdNew)
-                {
-                    // Only allow one instance
-                    Application.Current.Shutdown();
-                    return;
-                }
-            }
+
             InitializeSettings();
             InitializeAura();
             InitializeTrayIcon();
@@ -147,6 +151,11 @@ namespace AuraWallpaperColors
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Current.Shutdown();
+        }
+
+        public bool SignalExternalCommandLineArgs(IList<string> args)
+        {
+            return true;
         }
     }
 }
