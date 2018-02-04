@@ -83,6 +83,8 @@
     </ApplicationDefinition>
     <Compile Include="AuraColorSink.cs" />
     <Compile Include="ColorQuantizer.cs" />
+    <Compile Include="MainViewModel.cs" />
+    <Compile Include="StringToIntConverter.cs" />
     <Compile Include="WallpaperWatcher.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
