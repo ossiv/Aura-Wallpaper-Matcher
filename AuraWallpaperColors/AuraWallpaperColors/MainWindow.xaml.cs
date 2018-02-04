@@ -36,48 +36,14 @@ namespace AuraWallpaperColors
     public partial class MainWindow : Window
     {
 
-        int numPaletteColors = 10;
-
-        ColorCarousel ColorCarousel = null;
-
-        WallpaperWatcher WallpaperWatcher;
-
-
-        IDisposable WallpaperSubscription;
-
-        AuraColorSink AuraSink;
-
+        
         public MainWindow()
         {
             InitializeComponent();
 
-            AuraSink = new AuraColorSink();
-            WallpaperWatcher = new WallpaperWatcher();
-
-            WallpaperSubscription = WallpaperWatcher.Subscribe(WallpaperPathChanged);
+          
         }
 
-        private void WallpaperPathChanged(string newPath)
-        {
-            if (newPath == null || !File.Exists(newPath))
-            {
-                return;
-            }
-
-            var colors = ColorQuantizer.GetPaletteFromImageFile(newPath, numPaletteColors);
-
-            if (ColorCarousel == null)
-            {
-                ColorCarousel = new ColorCarousel(AuraSink);
-                ColorCarousel.SetColors(colors.outer, colors.colors);
-                ColorCarousel.Start();
-            }
-            else
-            {
-                ColorCarousel.SetColors(colors.outer, colors.colors);
-            }
-
-        }
 
     }
 }
