@@ -9,7 +9,7 @@
                             xmlns:tb="http://www.hardcodet.net/taskbar">
             <tb:TaskbarIcon x:Key="TrayIcon"
                   IconSource="/Resources/trayicon.ico"
-                  ToolTipText="hello world" />
+                  ToolTipText="Aura Wallpaper Matcher" />
 
         </ResourceDictionary>
     </Application.Resources>

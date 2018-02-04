@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -61,8 +62,17 @@ namespace AuraWallpaperColors
             if (SettingsWindow == null)
             {
                 SettingsWindow = new MainWindow();
+
+                SettingsWindow.Closed += SettingsWindow_Closed;
+
                 SettingsWindow.Show();
             }
+        }
+
+        private void SettingsWindow_Closed(object sender, EventArgs e)
+        {
+            SettingsWindow.Closed -= SettingsWindow_Closed;
+            SettingsWindow = null;
         }
 
         void InitializeAura()
@@ -70,18 +80,28 @@ namespace AuraWallpaperColors
             AuraSink = new AuraColorSink();
             WallpaperWatcher = new WallpaperWatcher();
 
+           
+
             WallpaperSubscription = WallpaperWatcher.Subscribe(WallpaperPathChanged);
         }
 
+        bool SettingColor;
+        private void WallpaperPathChanged(string newPath) {
+            if (SettingColor) return;
+            SettingColor = true;
+            Observable.FromAsync(() => SetColorsFromImage(newPath)).Take(1).Subscribe(_ => {
+                SettingColor = false;
+            });
+        }
 
-        private void WallpaperPathChanged(string newPath)
+        private async Task SetColorsFromImage(string path)
         {
-            if (newPath == null || !File.Exists(newPath))
+            if (path == null || !File.Exists(path))
             {
                 return;
             }
 
-            var colors = ColorQuantizer.GetPaletteFromImageFile(newPath, numPaletteColors);
+            var colors = await ColorQuantizer.GetPaletteFromImageFile(path, numPaletteColors);
 
             if (ColorCarousel == null)
             {

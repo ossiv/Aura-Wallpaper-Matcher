@@ -30,7 +30,7 @@ namespace AuraWallpaperColors
         }
 
 
-        public static (Color outer, List<Color> colors) GetPaletteFromImageFile(string path, int numColors)
+        public static async Task<(Color outer, List<Color> colors)> GetPaletteFromImageFile(string path, int numColors)
         {
             if (numColors < 2)
             {
@@ -41,7 +41,7 @@ namespace AuraWallpaperColors
             // so usually it's still locked by another process
             while (!IsFileReady(path))
             {
-                Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                await Task.Delay(TimeSpan.FromMilliseconds(1000));
             }
 
             Pix pix = null;
@@ -56,7 +56,7 @@ namespace AuraWallpaperColors
                     pix = Pix.Read(path);
                     if (pix == null)
                     {
-                        Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                        await Task.Delay(TimeSpan.FromMilliseconds(200));
                     }
                 }
 
