@@ -8,7 +8,8 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         Icon="/Resources/trayicon.ico"
-        Title="Aura Wallpaper Matcher">
+        Title="Aura Wallpaper Matcher"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <local:StringToIntConverter x:Key="IntConv" />
     </Window.Resources>
