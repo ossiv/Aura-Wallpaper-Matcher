@@ -69,7 +69,9 @@ namespace AuraWallpaperColors
 
             // the first one should be the "base" color for the image,
             // so use that as the main color
-            return (colors[0], colors.Skip(1).ToList());
+
+            var rest = colors.Count == 1? colors :  colors.Skip(1).ToList();
+            return (colors[0], rest);
         }
 
         static List<Color> ExtractColors(Pix from, int numPaletteColors)

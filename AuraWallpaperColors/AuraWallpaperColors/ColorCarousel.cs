@@ -34,7 +34,10 @@ namespace AuraWallpaperColors
         {
             if (colors.Count < Sink.ColorCount - 1)
             {
-                throw new ArgumentException("Too few colors for sink", "colors");
+                var neededCount = Sink.ColorCount - 1;
+                var count = colors.Count;
+                var repeats = neededCount / count + 1;
+                colors = Enumerable.Repeat(colors, repeats).SelectMany(d => d).Take(neededCount).ToList();
             }
 
             lock (colorLock)
