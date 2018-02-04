@@ -74,22 +74,22 @@ namespace AuraWallpaperColors
 
         static List<Color> ExtractColors(Pix from)
         {
-
-            var outpix = Leptonica.ColorQuant2.pixMedianCutQuantGeneral(from, 0, 8, 10, 0, 0, 0);
-            var colormap = outpix.Colormap;
-            var numColors = Leptonica.Colormap.pixcmapGetCount(colormap);
-
             List<Color> colors = new List<Color>();
 
-            for (int i = 0; i < numColors; ++i)
+            using (var outpix = Leptonica.ColorQuant2.pixMedianCutQuantGeneral(from, 0, 8, 10, 0, 0, 0))
             {
-                int r = 0, g = 0, b = 0;
-                Colormap.pixcmapGetColor(colormap, i, out r, out g, out b);
+                var colormap = outpix.Colormap;
+                var numColors = Leptonica.Colormap.pixcmapGetCount(colormap);
 
-                int color = b | g << 8 | r << 16 | (0xFF << 24);
-                colors.Add(Color.FromArgb(color));
+
+                for (int i = 0; i < numColors; ++i)
+                {
+                    Colormap.pixcmapGetColor(colormap, i, out int r, out int g, out int b);
+
+                    int color = b | g << 8 | r << 16 | (0xFF << 24);
+                    colors.Add(Color.FromArgb(color));
+                }
             }
-
 
             return colors;
         }
