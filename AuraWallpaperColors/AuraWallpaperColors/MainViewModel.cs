@@ -53,6 +53,13 @@ namespace AuraWallpaperColors
 
 
         public MainViewModel() {
+
+            var app = (App.Current as App);
+            var settings = app.Settings;
+
+            transitionLength = settings.TransitionLength;
+            numPaletteColors = settings.NumPaletteColors;
+
             PropertyChanged += MainViewModel_PropertyChanged;
         }
 
@@ -73,6 +80,12 @@ namespace AuraWallpaperColors
             if (!IsDirty) {
                 return;
             }
+            var app = (App.Current as App);
+            app.SetSettings(new Settings {
+                TransitionLength = TransitionLength,
+                NumPaletteColors = NumPaletteColors
+            });
+            IsDirty = false;
         }
     }
 }

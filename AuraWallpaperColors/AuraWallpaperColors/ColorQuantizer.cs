@@ -60,7 +60,7 @@ namespace AuraWallpaperColors
                     }
                 }
 
-                colors = ExtractColors(pix);
+                colors = ExtractColors(pix, numColors);
             }
             finally
             {
@@ -72,11 +72,11 @@ namespace AuraWallpaperColors
             return (colors[0], colors.Skip(1).ToList());
         }
 
-        static List<Color> ExtractColors(Pix from)
+        static List<Color> ExtractColors(Pix from, int numPaletteColors)
         {
             List<Color> colors = new List<Color>();
 
-            using (var outpix = Leptonica.ColorQuant2.pixMedianCutQuantGeneral(from, 0, 8, 10, 0, 0, 0))
+            using (var outpix = Leptonica.ColorQuant2.pixMedianCutQuantGeneral(from, 0, 8, numPaletteColors, 0, 0, 0))
             {
                 var colormap = outpix.Colormap;
                 var numColors = Leptonica.Colormap.pixcmapGetCount(colormap);

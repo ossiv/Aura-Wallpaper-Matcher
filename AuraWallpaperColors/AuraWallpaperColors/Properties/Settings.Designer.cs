@@ -22,5 +22,29 @@ namespace AuraWallpaperColors.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int TransitionLength {
+            get {
+                return ((int)(this["TransitionLength"]));
+            }
+            set {
+                this["TransitionLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int NumPaletteColors {
+            get {
+                return ((int)(this["NumPaletteColors"]));
+            }
+            set {
+                this["NumPaletteColors"] = value;
+            }
+        }
     }
 }

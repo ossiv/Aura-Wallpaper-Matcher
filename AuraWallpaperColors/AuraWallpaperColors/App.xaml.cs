@@ -22,7 +22,6 @@ namespace AuraWallpaperColors
 
         WallpaperWatcher WallpaperWatcher;
 
-
         IDisposable WallpaperSubscription;
 
         AuraColorSink AuraSink;
@@ -30,6 +29,8 @@ namespace AuraWallpaperColors
         TaskbarIcon TrayIcon;
 
         MainWindow SettingsWindow;
+
+        public Settings Settings { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -45,10 +46,27 @@ namespace AuraWallpaperColors
                     return;
                 }
             }
-
+            InitializeSettings();
             InitializeAura();
             InitializeTrayIcon();
 
+        }
+
+        private void InitializeSettings()
+        {
+            SetSettings(SettingsUtils.ReadSettings());
+        }
+
+        public void SetSettings(Settings settings) {
+            this.Settings = settings;
+
+            if (ColorCarousel != null)
+            {
+                ColorCarousel.TransitionDuration = Settings.TransitionLength;
+            }
+            numPaletteColors = Settings.NumPaletteColors;
+
+            SettingsUtils.SaveSettings(Settings);
         }
 
         private void InitializeTrayIcon()
@@ -105,7 +123,10 @@ namespace AuraWallpaperColors
 
             if (ColorCarousel == null)
             {
-                ColorCarousel = new ColorCarousel(AuraSink);
+                ColorCarousel = new ColorCarousel(AuraSink)
+                {
+                    TransitionDuration = Settings.TransitionLength
+                };
                 ColorCarousel.SetColors(colors.outer, colors.colors);
                 ColorCarousel.Start();
             }
