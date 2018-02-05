@@ -46,5 +46,29 @@ namespace AuraWallpaperColors.Properties {
                 this["NumPaletteColors"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("128")]
+        public int MainColorThreshold {
+            get {
+                return ((int)(this["MainColorThreshold"]));
+            }
+            set {
+                this["MainColorThreshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("128")]
+        public int ContrastConstant {
+            get {
+                return ((int)(this["ContrastConstant"]));
+            }
+            set {
+                this["ContrastConstant"] = value;
+            }
+        }
     }
 }

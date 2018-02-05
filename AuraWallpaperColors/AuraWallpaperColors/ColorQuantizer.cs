@@ -30,7 +30,7 @@ namespace AuraWallpaperColors
         }
 
 
-        public static async Task<(Color outer, List<Color> colors)> GetPaletteFromImageFile(string path, int numColors)
+        public static async Task<(Color outer, List<Color> colors)> GetPaletteFromImageFile(string path, int numColors, int mainColorThreshold, int contrastConstant)
         {
             if (numColors < 2)
             {
@@ -60,21 +60,39 @@ namespace AuraWallpaperColors
                     }
                 }
 
-                colors = ExtractColors(pix, numColors);
+                colors = ExtractColors(pix, numColors, contrastConstant);
             }
             finally
             {
                 pix?.Dispose();
             }
 
-            // the first one should be the "base" color for the image,
-            // so use that as the main color
+            Color outer = colors[0];
+            for (int i = 0; i < colors.Count; ++i) {
+                var c = colors[i];
+                if (c.R + c.B + c.G > mainColorThreshold) {
+                    outer = c;
+                    colors.RemoveAt(i);
+                    break;
+                }
+            }
+            if (colors.Count == 0) {
+                colors.Add(outer);
+            }
+            return (outer, colors);
+        }
+        // try to work around led color reproduction issues by increasing contrast
+        static byte ApplyContrast(byte color, int contrastConstant)
+        {
+            var contrastFactor = contrastConstant;
+            double factor = (259.0 * (255 + contrastFactor)) / (255 * (259 - contrastFactor));
 
-            var rest = colors.Count == 1? colors :  colors.Skip(1).ToList();
-            return (colors[0], rest);
+            var resultVal = factor * (color - 128) + 128;
+
+            return (byte)(Math.Max(Math.Min(resultVal, 255), 0));
         }
 
-        static List<Color> ExtractColors(Pix from, int numPaletteColors)
+        static List<Color> ExtractColors(Pix from, int numPaletteColors, int contrastConstant)
         {
             List<Color> colors = new List<Color>();
 
@@ -88,7 +106,10 @@ namespace AuraWallpaperColors
                 {
                     Colormap.pixcmapGetColor(colormap, i, out int r, out int g, out int b);
 
-                    int color = b | g << 8 | r << 16 | (0xFF << 24);
+                    int color = ApplyContrast((byte)b, contrastConstant) 
+                        | ApplyContrast((byte)g , contrastConstant) << 8
+                        | ApplyContrast((byte)r, contrastConstant) << 16 
+                        | (0xFF << 24);
                     colors.Add(Color.FromArgb(color));
                 }
             }

@@ -13,9 +13,11 @@ namespace AuraWallpaperColors
     {
         Aura.Motherboard Motherboard;
         SynchronizationContext Context;
-        public AuraColorSink()
+        
+
+        public AuraColorSink(SynchronizationContext context)
         {
-            Context = SynchronizationContext.Current;
+            Context = context;
             Motherboard = Aura.GetMotherboards().FirstOrDefault();
             if (Motherboard == null)
             {
@@ -39,16 +41,7 @@ namespace AuraWallpaperColors
         int IColorSink.ColorCount => Colors.Length;
 
 
-        // try to work around led color reproduction issues by increasing contrast
-        byte ApplyContrast(byte color)
-        {
-            const int contrastFactor = 128;
-            const double factor = (259.0 * (255 + contrastFactor)) / (255 * (259 - contrastFactor));
-
-            var resultVal = factor * (color - 128) + 128;
-
-            return (byte)(Math.Max(Math.Min(resultVal, 255), 0));
-        }
+        
 
         void IColorSink.Refresh()
         {
@@ -57,9 +50,9 @@ namespace AuraWallpaperColors
                 foreach (var (led, index) in Motherboard.Leds.Enumerate())
                 {
                     var color = Colors[index];
-                    led.Red = ApplyContrast(color.R);
-                    led.Green = ApplyContrast(color.G);
-                    led.Blue = ApplyContrast(color.B);
+                    led.Red = color.R;
+                    led.Green = color.G;
+                    led.Blue = color.B;
                 }
                 Motherboard.WriteLeds();
             }, null);

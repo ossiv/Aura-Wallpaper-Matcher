@@ -13,7 +13,7 @@
     <Window.Resources>
         <local:StringToIntConverter x:Key="IntConv" />
     </Window.Resources>
-    <Grid>
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
@@ -22,12 +22,21 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Label Content="Transition length (ms):" HorizontalAlignment="Left" Margin="16,16,16,0" VerticalAlignment="Top"/>
         <TextBox Grid.Column="1" VerticalContentAlignment="Center" Text="{Binding Path=TransitionLength, Mode=TwoWay, Converter={StaticResource IntConv}, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" Height="23" MaxLines="1" Margin="16,16,16,0" TextWrapping="Wrap" />
         <Label Content="Number of colors:"  Grid.Row="1" HorizontalAlignment="Left" Margin="16,16,16,0" VerticalAlignment="Top"/>
         <TextBox Grid.Column="1" VerticalContentAlignment="Center" Text="{Binding Path=NumPaletteColors, Mode=TwoWay, Converter={StaticResource IntConv}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Height="23" Margin="16,16,16,0" MaxLines="1"  HorizontalAlignment="Stretch"/>
-        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" FlowDirection="RightToLeft"  Orientation="Horizontal"  Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top" >
+
+        <Label Content="Main color threshold:"  Grid.Row="2" HorizontalAlignment="Left" Margin="16,16,16,0" VerticalAlignment="Top"/>
+        <TextBox Grid.Column="1" VerticalContentAlignment="Center" Text="{Binding Path=MainColorThreshold, Mode=TwoWay, Converter={StaticResource IntConv}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Height="23" Margin="16,16,16,0" MaxLines="1"  HorizontalAlignment="Stretch"/>
+
+        <Label Content="Contrast constant:"  Grid.Row="3" HorizontalAlignment="Left" Margin="16,16,16,0" VerticalAlignment="Top"/>
+        <TextBox Grid.Column="1" VerticalContentAlignment="Center" Text="{Binding Path=ContrastConstant, Mode=TwoWay, Converter={StaticResource IntConv}, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Height="23" Margin="16,16,16,0" MaxLines="1"  HorizontalAlignment="Stretch"/>
+        
+        <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" FlowDirection="RightToLeft"  Orientation="Horizontal"  Margin="0,0,0,0" Grid.Row="4" VerticalAlignment="Top" >
             <Button Content="Cancel" Margin="16" Padding="16,0,16,0" Height="23" Click="Cancel_Click"/>
             <Button Content="Apply" IsEnabled="{Binding Path=IsDirty, Mode=OneWay}" Margin="16,16,0,16" Padding="16,0,16,0" Height="23" Click="Apply_Click"/>
         </StackPanel>

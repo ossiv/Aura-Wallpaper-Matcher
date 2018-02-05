@@ -1,4 +1,5 @@
-﻿using Hardcodet.Wpf.TaskbarNotification;
+﻿using fi.ossiv.AuraSDK;
+using Hardcodet.Wpf.TaskbarNotification;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -6,6 +7,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -16,7 +18,9 @@ namespace AuraWallpaperColors
     /// </summary>
     public partial class App : Application, ISingleInstanceApp
     {
-        int numPaletteColors = 10;
+        int NumPaletteColors = 10;
+        int MainColorThreshold = 128;
+        int ContrastConstant = 128;
 
         ColorCarousel ColorCarousel = null;
 
@@ -50,9 +54,12 @@ namespace AuraWallpaperColors
         {
             base.OnStartup(e);
 
+
             InitializeSettings();
-            InitializeAura();
             InitializeTrayIcon();
+            var ctx = SynchronizationContext.Current;
+            Task.Run ( () => InitializeAura(ctx));
+            
 
         }
 
@@ -69,7 +76,10 @@ namespace AuraWallpaperColors
             {
                 ColorCarousel.TransitionDuration = Settings.TransitionLength;
             }
-            numPaletteColors = Settings.NumPaletteColors;
+            NumPaletteColors = Settings.NumPaletteColors;
+            MainColorThreshold = Settings.MainColorThreshold;
+            ContrastConstant = Settings.ContrastConstant;
+
 
             SettingsUtils.SaveSettings(Settings);
         }
@@ -102,9 +112,14 @@ namespace AuraWallpaperColors
             SettingsWindow = null;
         }
 
-        void InitializeAura()
+        async Task InitializeAura(SynchronizationContext context)
         {
-            AuraSink = new AuraColorSink();
+
+            while (Aura.GetMotherboards().Count < 1)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(2));
+            }
+            AuraSink = new AuraColorSink(context);
             WallpaperWatcher = new WallpaperWatcher();
 
 
@@ -130,7 +145,7 @@ namespace AuraWallpaperColors
                 return;
             }
 
-            var colors = await ColorQuantizer.GetPaletteFromImageFile(path, numPaletteColors);
+            var colors = await ColorQuantizer.GetPaletteFromImageFile(path, NumPaletteColors, MainColorThreshold, ContrastConstant);
 
             if (ColorCarousel == null)
             {
